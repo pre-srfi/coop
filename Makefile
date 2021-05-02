@@ -1,4 +1,4 @@
-FILENAME=template
+FILENAME=pre-srfi-coop
 
 all:
 	ln -sf README.md $(FILENAME).md
