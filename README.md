@@ -1,6 +1,6 @@
-# SRFI nnn: Title
+# SRFI nnn: coop
 
-by Firstname Lastname, Another Person, Third Person
+by Amirouche Boubekki
 
 ## Status
 
@@ -8,8 +8,7 @@ Early Draft
 
 ## Abstract
 
-??? abstract, preferably shorter than 200 words. Please outline the
-need for, and design of, the proposal.
+Helpers to handle concurrency.
 
 ## Issues
 
@@ -38,9 +37,88 @@ GitHub's version of Markdown can make tables. For example:
 
 ## Specification
 
-??? detailed specification. This should be detailed enough that a
-conforming implementation could be completely created from this
-description.
+### `(coop-time) → positive-integer? positive-integer?`
+
+Rationale: it call help to benchmark at runtime the execution of
+flows, and scale accordingly the number of flows.
+
+Returns two numbers, the first represents seconds, the second
+nanoseconds. The whole represent an absolute time.
+
+Note: it might just be a shortcut for jiffies.
+
+### `(coop-spawn thunk) procedure?`
+
+Starts a new flow of execution with `THUNK`. If `THUNK` raise an
+object the behavior is unspecified.  When `THUNK` returns, returned
+values, if any, are unreachable.
+
+### `(coop-priority [number]) (any-of? positive-integer infinity?) → (any-of? positive-integer infinity?)` parameter
+
+Returns or set the priority of the current flow of execution. A
+priority of `+inf.0` may be used to instruct the host that the current
+thunk should have exclusive access to one computation unit.
+
+Note: The behavior of parameters related to flows are not specified.
+
+### `(make-coop-channel)`
+
+Returns a channel.
+
+### `(coop-channel? obj)`
+
+Returns true, if `OBJ` is channel, otherwise false. A channel allow
+communication between flows.
+
+### `(coop-operation? obj)`
+
+Returns true, if `OBJ` is an operation, otherwise false.
+
+### `(coop-wrap operation proc)`
+
+Wrap an operation with `PROC`. If the operation `OPERATION` when
+applied by `coop-apply` would return an object `obj`, then `coop-wrap`
+when applied, then the returned value is `(PROC obj)`. If `OPERATION`
+returns no values, `PROC` takes no values.
+
+### `(coop-produce channel obj)`
+
+Return an operation, that will produce `OBJ` in `CHANNEL` when applied by
+`coop-apply`, and will return no values.
+
+A flow that is producing values on a channel, may wait indefinitly if
+there is nobody consuming on the same channel.
+
+### `(coop-consume channel)`
+
+Return an operation, that will consume and return an object produced
+on `CHANNEL` when applied by `coop-apply`,
+
+A flow may wait indefinitly if there is nobody producing on the same
+channel.
+
+### `(coop-sleep seconds [nanoseconds])`
+
+Return an operation. It may return after `SECONDS` and `NANOSECONDS`
+when applied with `coop-apply`. In other words the following code
+will return after one second, the value `'done-sleeping`:
+
+```scheme
+(coop-apply (coop-wrap (coop-sleep 1) (lambda () 'done-sleeping)))
+```
+
+It can be used with `coop-choice` to implement timeouts, and avoid the
+situations where flows wait indefinitly.
+
+### `(coop-choice operations)`
+
+Return an operation made of all `OPERATIONS`. When applied, it will
+return the return values, if any, of one complete operation.
+
+### `(coop-apply coop)`
+
+Perform an operation, the flow that called `coop-perform` does not
+necessarly return immediatly.
 
 ## Examples
 
@@ -56,8 +134,7 @@ the sample implementation.
 
 ## References
 
-??? Optional section with links to web pages, books and papers that
-helped design the SRFI.
+Many.
 
 ## Copyright
 
