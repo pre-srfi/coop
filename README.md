@@ -47,21 +47,18 @@ nanoseconds. The whole represent an absolute time.
 
 Note: it might just be a shortcut for jiffies.
 
-### `(coop-spawn thunk) procedure?`
+### `(coop-spawn [priority] thunk) positive? procedure?`
 
 Starts a new flow of execution with `THUNK`. If `THUNK` raise an
 object the behavior is unspecified.  When `THUNK` returns, returned
 values, if any, are unreachable.
 
-The flow started with `coop-spawn` always start with a priority of 0.
+The flow started with `coop-spawn` have a priority of zero, except if
+`PRIORITY` is provided. `PRIORITY` is a hint to help the host choose
+what flow to execute.
 
-### `(coop-priority [number]) positive? → positive?`
-
-Returns or set the priority of the current flow of execution. A
-priority of `+inf.0` may be used to instruct the host that the current
-thunk should have exclusive access to one computation unit.
-
-Note: The behavior of parameters related to flows are not specified.
+A priority of `+inf.0` may be used to instruct the host that `THUNK`
+should have exclusive access to one computation unit.
 
 ### `(make-coop-channel)`
 
