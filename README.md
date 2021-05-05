@@ -122,7 +122,7 @@ return the return values, if any, of one and only one operation.
 
 ### `(coop-apply operation)`
 
-Apply an operation. The flow that called `coop-perform` does not
+Apply an operation. The flow that called `coop-apply` does not
 necessarly return immediatly.
 
 ## Examples
