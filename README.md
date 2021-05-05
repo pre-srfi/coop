@@ -120,7 +120,7 @@ situations where flows wait indefinitly.
 Returns an operation made of all `OPERATIONS`. When applied, it will
 return the return values, if any, of one and only one operation.
 
-### `(coop-apply coop)`
+### `(coop-apply operation)`
 
 Apply an operation. The flow that called `coop-perform` does not
 necessarly return immediatly.
