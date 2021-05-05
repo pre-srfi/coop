@@ -37,7 +37,7 @@ GitHub's version of Markdown can make tables. For example:
 
 ## Specification
 
-### `(coop-time) → positive-integer? positive-integer?`
+### `(coop-time) → positive? positive?`
 
 Rationale: it call help to benchmark at runtime the execution of
 flows, and scale accordingly the number of flows.
@@ -53,7 +53,7 @@ Starts a new flow of execution with `THUNK`. If `THUNK` raise an
 object the behavior is unspecified.  When `THUNK` returns, returned
 values, if any, are unreachable.
 
-### `(coop-priority [number]) (any-of? positive-integer infinity?) → (any-of? positive-integer infinity?)` parameter
+### `(coop-priority [number]) positive? → positive?`
 
 Returns or set the priority of the current flow of execution. A
 priority of `+inf.0` may be used to instruct the host that the current
@@ -77,29 +77,35 @@ Returns true, if `OBJ` is an operation, otherwise false.
 ### `(coop-wrap operation proc)`
 
 Wrap an operation with `PROC`. If the operation `OPERATION` when
-applied by `coop-apply` would return an object `obj`, then `coop-wrap`
-when applied, then the returned value is `(PROC obj)`. If `OPERATION`
-returns no values, `PROC` takes no values.
+applied by `coop-apply` would return values `objs`, then when
+`coop-wrap` is applied, the returned value is `(apply PROC objs)`.
 
-### `(coop-produce channel obj)`
+### `(coop-produce channel objs ...)`
 
-Return an operation, that will produce `OBJ` in `CHANNEL` when applied by
-`coop-apply`, and will return no values.
+Returns an operation, that will produce `OBJS` in `CHANNEL` when
+applied by `coop-apply`, and will return no values.
 
 A flow that is producing values on a channel, may wait indefinitly if
 there is nobody consuming on the same channel.
 
+`coop-produce` will synchronize once and only once with one and only
+one `coop-consume`.
+
 ### `(coop-consume channel)`
 
-Return an operation, that will consume and return an object produced
-on `CHANNEL` when applied by `coop-apply`,
+Returns an operation, that will consume and return objects produced on
+`CHANNEL` when applied by `coop-apply`.
 
 A flow may wait indefinitly if there is nobody producing on the same
 channel.
 
+`coop-consume` will synchronize once and only once with one and only
+one `coop-produce`.
+
+
 ### `(coop-sleep seconds [nanoseconds])`
 
-Return an operation. It may return after `SECONDS` and `NANOSECONDS`
+Returns an operation. It may return after `SECONDS` and `NANOSECONDS`
 when applied with `coop-apply`. In other words the following code
 will return after one second, the value `'done-sleeping`:
 
@@ -112,12 +118,12 @@ situations where flows wait indefinitly.
 
 ### `(coop-choice operations)`
 
-Return an operation made of all `OPERATIONS`. When applied, it will
-return the return values, if any, of one complete operation.
+Returns an operation made of all `OPERATIONS`. When applied, it will
+return the return values, if any, of one and only one operation.
 
 ### `(coop-apply coop)`
 
-Perform an operation, the flow that called `coop-perform` does not
+Apply an operation. The flow that called `coop-perform` does not
 necessarly return immediatly.
 
 ## Examples
