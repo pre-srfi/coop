@@ -53,6 +53,8 @@ Starts a new flow of execution with `THUNK`. If `THUNK` raise an
 object the behavior is unspecified.  When `THUNK` returns, returned
 values, if any, are unreachable.
 
+The flow started with `coop-spawn` always start with a priority of 0.
+
 ### `(coop-priority [number]) positive? → positive?`
 
 Returns or set the priority of the current flow of execution. A
