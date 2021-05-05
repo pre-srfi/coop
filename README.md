@@ -39,8 +39,8 @@ GitHub's version of Markdown can make tables. For example:
 
 ### `(coop-time) → positive? positive?`
 
-Rationale: it call help to benchmark at runtime the execution of
-flows, and scale accordingly the number of flows.
+Rationale: it can help to benchmark at runtime the execution of flows,
+and scale accordingly the number of flows.
 
 Returns two numbers, the first represents seconds, the second
 nanoseconds. The whole represent an absolute time.
@@ -87,8 +87,8 @@ applied by `coop-apply`, and will return no values.
 A flow that is producing values on a channel, may wait indefinitly if
 there is nobody consuming on the same channel.
 
-`coop-produce` will synchronize once and only once with one and only
-one `coop-consume`.
+`coop-produce` will apply once and only once with one and only one
+`coop-consume`.
 
 ### `(coop-consume channel)`
 
@@ -98,7 +98,7 @@ Returns an operation, that will consume and return objects produced on
 A flow may wait indefinitly if there is nobody producing on the same
 channel.
 
-`coop-consume` will synchronize once and only once with one and only
+`coop-consume` will apply once and only once with one and only
 one `coop-produce`.
 
 
